@@ -1,4 +1,5 @@
 import numpy as np
+import matplotlib.pyplot as plt
 #macierz N=1293, a1=14 a2=-1 a3=-1 f=7
 #wektor b_i=sin(i*7)
 class LinearEquation:
@@ -27,7 +28,5 @@ class LinearEquation:
     def createEquation(self):
         sysMatrix=self.systemMatrix(self.n,self.a1,self.a2,self.a3)
         vectorB=self.awakeVector(self.n,self.f)
-        print(sysMatrix)
-        print(vectorB)
-       # return sysMatrix,vectorB
+        return sysMatrix,vectorB
 
