@@ -23,17 +23,21 @@ class Gauss:
         U = np.triu(self.sysMatrix, k=1)
         D = np.diag(np.diag(self.sysMatrix))
         T=D+L
-        T_inv = np.linalg.inv(T)
+        #T_inv = np.linalg.inv(T)
 
         while (iter<maxIter) and (Resnorm>1e-9):
-            new_x=np.dot(-T_inv,np.dot(U,x))+np.dot(T_inv,self.vectorB)
+            rhs = self.vectorB - np.dot(U, x)
+            new_x = np.copy(x)
+            for i in range(n):
+                new_x[i] = (rhs[i] - np.dot(T[i, :i], new_x[:i])) / T[i, i]
+
             Resnorm=np.linalg.norm(np.dot(self.sysMatrix, new_x) - self.vectorB)
             res.append(Resnorm)
             x=new_x
             iter+=1
         end = time.perf_counter()
 
-        #self.PlotResiduum(res)
+        self.PlotResiduum(res)
         t_total = end - start
 
         return x,res,iter,t_total
