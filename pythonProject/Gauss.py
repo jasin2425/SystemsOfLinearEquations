@@ -1,15 +1,20 @@
-import numpy as np
+import matplotlib.pyplot as plt
+import time
 
 from linearEquation import *
 class Gauss:
     def __init__(self,sysMatrix,vectorB):
         self.sysMatrix=sysMatrix
         self.vectorB=vectorB
+
     def calcResiduum(self,sysMatrix,vectorB,x):
         return np.dot(sysMatrix,x)-vectorB
+
     def solveGauss(self):
         res=[]
         n=len(self.vectorB)
+        start = time.perf_counter()
+
         x=np.ones(n)
         Resnorm=5
         maxIter=8000
@@ -22,15 +27,23 @@ class Gauss:
 
         while (iter<maxIter) and (Resnorm>1e-9):
             new_x=np.dot(-T_inv,np.dot(U,x))+np.dot(T_inv,self.vectorB)
-            resid=np.sqrt(np.sum(self.calcResiduum(self.sysMatrix,self.vectorB,new_x)**2))
-            res.append(resid)
-            Resnorm=resid
+            Resnorm=np.linalg.norm(np.dot(self.sysMatrix, new_x) - self.vectorB)
+            res.append(Resnorm)
             x=new_x
             iter+=1
-        self.PlotResiduum(res)
-        return x,res,iter
+        end = time.perf_counter()
+
+        #self.PlotResiduum(res)
+        t_total = end - start
+
+        return x,res,iter,t_total
     def PlotResiduum(self,res):
-        res_np=np.array(res)
+        res_np = np.array(res)
         plt.plot(res_np)
         plt.yscale('log')
+        plt.xlabel("Numer iteracji")
+        plt.ylabel("Norma residuum")
+        plt.title("Zbieżność metody Gaussa-Seidla")
+        plt.grid(True)
+        plt.savefig("Gauss-Seidel.png", dpi=300)
         plt.show()
